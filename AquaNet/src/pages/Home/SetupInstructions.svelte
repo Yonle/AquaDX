@@ -37,6 +37,10 @@
 [dns]
 default=${AQUA_CONNECTION}
 
+startupPort=22344
+aimedbPort=22345
+billingPort=22346
+
 [keychip]
 enable=1
 ${keychipLines}`.trim(), {
@@ -235,7 +239,7 @@ ${keychipLines}`.trim(), {
     background: #fff3
 
     margin: 1em 0
-    
+
     position: relative
     left: 50%
     transform: translate(-50%, 0)
@@ -260,7 +264,7 @@ ${keychipLines}`.trim(), {
     display: flex
     div
       margin-left: 1em
-  
+
   .setup-btn
     margin: 0.5em
 
@@ -327,7 +331,7 @@ ${keychipLines}`.trim(), {
     gap: 0.5em
     align-items: center
     margin-top: 0.25em
-    
+
     input
       flex: 1 1 16rem
       max-width: 16rem
@@ -338,6 +342,6 @@ ${keychipLines}`.trim(), {
 
   .danger
     color: vars.$c-error
-    
+
 </style>
 
