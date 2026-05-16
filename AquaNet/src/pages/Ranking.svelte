@@ -3,7 +3,6 @@
   import { title } from "../libs/ui";
   import { GAME } from "../libs/sdk";
   import type { GenericRanking } from "../libs/generalTypes";
-  import StatusOverlays from "../components/StatusOverlays.svelte";
   import type { GameName } from "../libs/scoring";
   import { GAME_TITLE } from "../libs/i18n";
   import { t } from "../libs/i18n";
@@ -86,9 +85,9 @@
     <Tooltip triggeredBy=".name" loading={hoverLoading}>
       <UserCard username={hoveringUser} {game} setLoading={l => hoverLoading = l} />
     </Tooltip>
+  {:else}
+    <p>{error}</p>
   {/if}
-
-  <StatusOverlays error={error} loading={!loadedPages} />
 </main>
 
 <style lang="sass">
