@@ -49,8 +49,7 @@
 <nav>
   {#if path !== "/"}
     <a class="logo" href={USER.isLoggedIn() ? "/home" : "/"}>
-      <img src="/assets/icons/android-chrome-192x192.png" alt="AquaDX"/>
-      <span>AquaNet</span>
+      <img src="/assets/imgs/waltuhNet.png" alt="waltuhNet"/>
     </a>
   {/if}
   {#if $ANNOUNCEMENT}
@@ -140,6 +139,10 @@
       color: vars.$c-main
       letter-spacing: 0.2em
       flex: 1
+    
+    .logo img
+      width: auto
+      border-radius: 0
 
       @media (max-width: vars.$w-mobile)
         > span
