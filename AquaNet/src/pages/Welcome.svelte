@@ -185,7 +185,7 @@
 
 <main id="home" class="no-margin">
   <div>
-    <h1 id="title">AquaNet</h1>
+    <img id="title" src="/assets/imgs/waltuhNet.png" alt="waltuhNet"/>
     <div id="welcome">
     {#if hasAc}
       <span>{t('welcome.login_link')}:</span><br>
@@ -344,6 +344,8 @@
       margin-bottom: 32px
       opacity: 0.9
 
+      height: 110px
+
     #welcome
       margin-bottom: 32px
 
@@ -364,7 +366,7 @@
         top: 90px
         height: 1130px
         width: 1500px
-        $color: rgb(158, 110, 230)
+        $color: vars.$c-l1
         background: radial-gradient(50% 50% at 50% 50%, rgba($color, 0.28) 0%, rgba(0,0,0,0) 100%)
 
       .l2
@@ -372,7 +374,7 @@
         top: 560px
         height: 1200px
         width: 1500px
-        $color: rgb(92, 195, 250)
+        $color: vars.$c-l2
         background: radial-gradient(50% 50% at 50% 50%, rgba($color, 0.28) 0%, rgba(0,0,0,0) 100%)
 
       .l3
@@ -381,7 +383,7 @@
         top: -630px
         width: 1500px
         height: 1000px
-        $color: rgb(230, 110, 156)
+        $color: vars.$c-l3
         background: radial-gradient(50% 50% at 50% 50%, rgba($color, 0.28) 0%, rgba(0,0,0,0) 100%)
 
     @media (max-width: 500px)
