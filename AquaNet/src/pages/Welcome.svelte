@@ -344,7 +344,8 @@
       margin-bottom: 32px
       opacity: 0.9
 
-      height: 110px
+      max-height: 110px
+      max-width: 50vw
 
     #welcome
       margin-bottom: 32px
