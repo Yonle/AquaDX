@@ -21,3 +21,13 @@ Finally, run:
 ```
 pnpm run dev
 ```
+### Running locally (with bun)
+
+Alternatively, If you prefer [Bun](https://bun.sh), You can do the same as above.
+Start by configuring the `VITE_AQUA_HOST` in `.env` (copy `.env.example` file to `.env`) to use your URL.
+
+and finally:
+```
+bun install
+bun run dev
+```
