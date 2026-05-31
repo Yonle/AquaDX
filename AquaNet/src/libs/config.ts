@@ -20,9 +20,7 @@ export const DEFAULT_PFP = '/assets/imgs/no_profile.png'
 // Key name for access key scanned from QR code
 export const ACCESSCODE_QKEY = import.meta.env.VITE_ACCESSCODE_QKEY || "accesskey"
 
-// Documentation for Userbox mode can be found in `docs/aquabox-url-mode.md`
-// Please note that if this is set, it must be manually unset by users in Chuni Settings -> Update Userbox -> Switch to URL mode -> (empty value) -> Enter key
-export const USERBOX_DEFAULT_URL = ""
+export const USERBOX_DEFAULT_URL = import.meta.env.VITE_USERBOX_DEFAULT_URL || ""
 
 export const HAS_USERBOX_ASSETS = true
 
