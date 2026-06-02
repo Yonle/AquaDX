@@ -344,9 +344,12 @@
       margin-bottom: 32px
       opacity: 0.9
 
+<<<<<<< HEAD
       max-height: 110px
       max-width: 50vw
 
+=======
+>>>>>>> upstream/v1-dev
     #welcome
       margin-bottom: 32px
 

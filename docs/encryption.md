@@ -15,7 +15,7 @@ Card Maker has encryption features in the client, but they are not supported due
 ```json
 {
     "code": "SDHD",
-    "versions": [215, 216],
+    "versions": [215],
     "key": "DECAFBADDECAFBADDECAFBADDECAFBADDECAFBADDECAFBADDECAFBADDECAFBAD",
     "iv": "DECAFBADDECAFBADDECAFBADDECAFBAD",
     "salt": "DECAFBADDECAFBAD",
@@ -27,7 +27,7 @@ Card Maker has encryption features in the client, but they are not supported due
 
 Replace `code` with the correct code for your game (`SDHD` for Chunithm JP, `SDEZ` for Maimai JP, etc.).<br>
 Set `versions` to be an array of game versions without the decimal (215 for 2.15, 150 for 1.50, etc.).<br> 
-You MUST include rom patch versions in this array or it will not encrypt correctly.
+You must include the rom major version. Minor versions will automatically round down to use the major key.
 
 - Maimai DX does NOT use iterations, you do not need to include it
 - Ongeki always uses 64 iterations (you must include it)

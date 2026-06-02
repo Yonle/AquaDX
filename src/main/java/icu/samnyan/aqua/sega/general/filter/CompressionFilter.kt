@@ -19,7 +19,7 @@ import java.util.*
 import javax.crypto.Cipher
 import javax.crypto.spec.IvParameterSpec
 import javax.crypto.spec.SecretKeySpec
-
+import kotlin.math.floor
 
 /**
  * @author samnyan (privateamusement@protonmail.com)
@@ -36,6 +36,10 @@ class CompressionFilter(
 
     }
 
+    fun truncateVersion(version: Number): Number {
+        return (floor(version.toFloat() / 5.0) * 5).toInt();
+    }
+
     var keys = gameData.chu3GameEncryption + gameData.mai2GameEncryption + gameData.ogkGameEncryption
     fun getEncryptionKeys(path: String): GameEncryptionKey? {
         val endpoint = path.split("/").last()
@@ -43,7 +47,7 @@ class CompressionFilter(
 
         val game = path.split("/")[2]
         val version = path.split("/")[3].filterNot { it == '.' }.toInt()
-        return keys.find { it.versions.contains(version) && it.code == game }
+        return keys.find { it.versions.contains(truncateVersion(version)) && it.code == game }
     }
 
     @OptIn(ExperimentalStdlibApi::class)
