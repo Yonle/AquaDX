@@ -63,6 +63,8 @@ class AquaNetUser(
     var profileBio: String? = "",
     var profilePicture: String? = "",
     var optOutOfLeaderboard: Boolean = false,
+    var hideCountry: Boolean = false,
+    var displayCandidates: Boolean = false,
 
     // Email confirmation
     var emailConfirmed: Boolean = false,
@@ -97,7 +99,7 @@ class AquaNetUser(
     val publicFields get() = mapOf(
         "username" to username,
         "displayName" to displayName,
-        "country" to country,
+        "country" to if (hideCountry) "" else country,
         "regTime" to regTime,
         "profileLocation" to profileLocation,
         "profileBio" to profileBio,
@@ -145,15 +147,6 @@ class AquaUserServices(
             }
     }
 
-    val keychipRange = 1e9.toULong()..1e10.toULong() - 1UL
-    private fun generateKeychipId(): String {
-        // 1337 is retained for backwards compatibility, it's no longer required for cabinet keychips
-        var keychip = "A" + keychipRange.random() + "1337"
-        while ( userKeychipRepo.existsByKeychipId(keychip) )
-            keychip = "A" + keychipRange.random() + "1337"
-        return keychip
-    }
-
     fun create(username: Str, email: Str, password: Str, country: Str, emailConfirmed: Boolean = false): AquaNetUser {
         // Create user
         val user = AquaNetUser(
@@ -175,13 +168,9 @@ class AquaUserServices(
         }
         user.ghostCard = card
 
-        // Create an automatic keychip
-        val keychip = UserKeychip(0, user, generateKeychipId())
-
         // Save the user
         userRepo.save(user)
         cardRepo.save(card)
-        userKeychipRepo.save(keychip)
 
         return user
     }
@@ -264,4 +253,6 @@ class AquaUserServices(
     }
 
     fun checkOptOutOfLeaderboard(optOutOfLeaderboard: Str) = optOutOfLeaderboard.toBoolean()
+    fun checkHideCountry(hideCountry: Str) = hideCountry.toBoolean()
+    fun checkDisplayCandidates(displayCandidates: Str) = displayCandidates.toBoolean()
 }

@@ -46,7 +46,7 @@ class AimeDB(
         keychipId = readPaddedString(12u)       // 14 12b
     )
 
-    fun ByteBuf.readPaddedString(maxLen: UInt) = readBytes(maxLen.toInt()).toString(US_ASCII).trimEnd('\u0000')
+    fun ByteBuf.readPaddedString(maxLen: UInt) = readCharSequence(maxLen.toInt(), US_ASCII).toString().trimEnd('\u0000')
 
     data class Handler(val name: String, val fn: (ByteBuf) -> ByteBuf?)
 

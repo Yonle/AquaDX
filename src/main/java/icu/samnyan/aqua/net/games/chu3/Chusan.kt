@@ -33,7 +33,7 @@ class Chusan(
     // Only show > AAA rank
     override val shownRanks = chu3Scores.filter { it.first >= 95 * 10000 }
     override val settableFields: Map<String, (Chu3UserData, String) -> Unit> by lazy { mapOf(
-        "userName" to usernameCheck(SEGA_USERNAME_CHARS),
+        "userName" to usernameCheck(false),
         "nameplateId" to { u, v -> u.nameplateId = v.int },
         "frameId" to { u, v -> u.frameId = v.int },
         "trophyId" to { u, v -> u.trophyId = v.int },

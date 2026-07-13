@@ -157,6 +157,16 @@
         </div>
       </div>
       <div class="field m-t">
+        <div class="bool">
+            <input id="hideCountry" type="checkbox" bind:checked={me.hideCountry}
+              on:change={() => submit('hideCountry', me.hideCountry.toString())}/>
+            <label for="hideCountry">
+              <span class="name">{ts(`settings.fields.hideCountry.name`)}</span>
+              <span class="desc">{ts(`settings.fields.hideCountry.desc`)}</span>
+            </label>
+        </div>
+      </div>
+      <div class="field m-t">
         <div>
             <button on:click={logOut}>{ts(`settings.profile.logout`)}</button>
         </div>

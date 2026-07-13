@@ -32,7 +32,7 @@ fun OngekiController.initUser() {
     "GetUserLoginBonus".unpaged { db.loginBonus.findByUser_Card_ExtId(uid) }
     "GetUserMissionPoint".unpaged { db.missionPoint.findByUser_Card_ExtId(uid) }
     "GetUserMusicItem".unpaged { db.musicItem.findByUser_Card_ExtId(uid) }
-    "GetUserRival".unpaged { db.rivalData.findByUser_Card_ExtId(uid) }
+    "GetUserRival".unpaged { db.rival.findByUser_Card_ExtId(uid) }
     "GetUserScenario".unpaged { db.scenario.findByUser_Card_ExtId(uid) }
     "GetUserSkin".unpaged { db.skin.findByUser_Card_ExtId(uid) }
     "GetUserStory".unpaged { db.story.findByUser_Card_ExtId(uid) }

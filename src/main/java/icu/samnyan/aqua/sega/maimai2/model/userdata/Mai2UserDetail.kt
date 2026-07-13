@@ -136,6 +136,7 @@ class Mai2UserDetail(
     var totalReMasterAchievement: Long = 0,
     var playerOldRating: Long = 0,
     var playerNewRating: Long = 0,
+    @JsonIgnore
     var banState: Int = 0,
     var dateTime: Long = 0,
 

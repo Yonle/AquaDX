@@ -19,11 +19,14 @@ fun Maimai2ServletController.initApis() {
         "userExtend" to (db.userExtend.findSingleByUser_Card_ExtId(uid) ?: (404 - "User not found"))
     ) }
 
-    "GetUserData" { mapOf(
-        "userId" to uid,
-        "userData" to (db.userData.findByCardExtId(uid) ?: (404 - "User not found")),
-        "banState" to 0
-    ) }
+    "GetUserData" {
+        val user = db.userData.findByCardExtId(uid) ?: (404 - "User not found")
+        mapOf(
+            "userId" to uid,
+            "userData" to user,
+            "banState" to user.banState
+        )
+    }
 
     "GetUserLoginBonus".unpaged { db.userLoginBonus.findByUser_Card_ExtId(uid) }
     "GetUserMap".unpaged { db.userMap.findByUser_Card_ExtId(uid) }

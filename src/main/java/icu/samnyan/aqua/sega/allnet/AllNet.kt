@@ -22,6 +22,7 @@ class AllNetProps {
     val keychipSesExpire: Long = 172800000 // milliseconds
     var checkKeychip: Boolean = false
     var keychipPermissiveForTesting: Boolean = false
+    var tls: Boolean = false
     var redirect: String = "web"
 
     var placeName: String = ""
@@ -104,6 +105,12 @@ class AllNet(
 
         var session: String? = null
 
+        val gameId = reqMap["game_id"] ?: return "".also { logger.warn("> Rejected: No game_id provided") }
+        val ver = reqMap["ver"] ?: "1.0"
+
+        if ((ver.toDoubleOrNull() ?: 0.0) < 1.0)
+            return "".also { logger.warn("> Rejected: Version $ver is not allowed (typically bad ICF)") }
+
         // Proper keychip authentication
         if (props.checkKeychip) {
             // If it's a user keychip, it should be in user database
@@ -129,8 +136,6 @@ class AllNet(
             }
         }
 
-        val gameId = reqMap["game_id"] ?: return "".also { logger.warn("> Rejected: No game_id provided") }
-        val ver = reqMap["ver"] ?: "1.0"
 
         val formatVer = reqMap["format_ver"] ?: ""
         val resp = props.map.mut + mapOf(
@@ -184,8 +189,9 @@ class AllNet(
 
         // If keychip authentication is enabled, the game URLs will be set to /gs/{token}/{game}/...
         val base = if (session != null) "gs/$session" else "g"
+        val protocol = if (props.tls) "https" else "http"
 
-        val url = "http://$addr/$base/$gameId/$ver"
+        val url = "$protocol://$addr/$base/$gameId/$ver"
         return url + (if (gameId == "SDFE") "" else "/")  // Wacca must not end with trailing slash
     }
 

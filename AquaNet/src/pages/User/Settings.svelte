@@ -14,6 +14,7 @@
   import UserSettings from "../../components/settings/UserSettings.svelte";
   import type { Component } from "svelte";
   import { EN_REF } from "../../libs/i18n/en_ref";
+  import type { GameName } from "../../libs/scoring";
 
   USER.ensureLoggedIn()
 
@@ -30,15 +31,22 @@
   if (!pages[page] && page)
     error = t("404", {pathname: new URL(location.href).pathname});
 
-  USER.me().then(m => me = m)
+  let userGames: GameName[] = [];
+  
+  USER.me().then(m => {
+    me = m
+    CARD.userGames(m.username).then(cards => userGames = Object.keys(cards).filter(k => !!cards[k as GameName]) as GameName[])
+  })
     .catch(e => error = e.message)
+
+  
 </script>
 
 <main class="content">
   <div class="outer-title-options">
     <h2>{t('settings.title')}</h2>
     <nav>
-      {#each Object.entries(pages) as tab}
+      {#each Object.entries(pages).filter(v => v[0] == "profile" || v[0] == "global" || userGames.includes(v[0] as GameName)) as tab}
         <a href={`/settings/${tab[0] != "profile" ? tab[0] : ""}`} transition:slide={{axis: 'x'}} 
           class:active={tab[0] == page || (tab[0] == "profile" && !page)} role="button" tabindex="0">
           {ts(`settings.tabs.${tab[0]}`)}

@@ -65,10 +65,13 @@
 
   const getGameByCode = (code: string) => {
     switch (code?.toUpperCase()) {
+      case 'SDGA':
       case 'SDEZ':
         return 'mai2';
       case 'SDHD':
         return 'chu3';
+      case 'SDDT':
+        return 'ongeki';
       default:
         throw new Error(t('home.import.unknown-game'));
     }

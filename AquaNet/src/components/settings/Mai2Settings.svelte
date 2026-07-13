@@ -9,23 +9,21 @@
   import { download } from "../../libs/ui";
   import UserOptionSlider from "./UserOptionSlider.svelte";
   import type { GameUserOption } from "../../libs/generalTypes";
+  import InputField from "../ui/InputField.svelte";
 
-  const profileFields = [
-    ['name', t('settings.mai2.name')],
-  ]
+  let userNameField: any
 
   let error: string
   let submitting = ""
   let loading = true
-  let values = Array(profileFields.length).fill('')
   let changed: string[] = []
 
   let userOptions: GameUserOption = {}
   let userIsUsingPreset = false
 
-  USER.me().then(me => 
+  USER.me().then(me =>
     GAME.userSummary(me.username, 'mai2').then(async ({name}) => {
-      values = [name]
+      userNameField = {key: "gameUsername", value: name, type: "String"}
 
       userOptions = await SETTING.optionGet('mai2').catch(_ => {
         error = t("userbox.error.nodata")
@@ -36,19 +34,6 @@
       loading = false
     }).catch(e => error = e.message));
 
-  function submit(field: string, value: string) {
-    if (submitting) return
-    submitting = field
-
-    switch (field) {
-      case 'name':
-        GAME.changeName('mai2', value).then(({newName}) => {
-          changed = changed.filter(c => c !== field)
-          values = [newName]
-        }).catch(e => error = e.message).finally(() => submitting = "")
-        break
-    }
-  }
   async function exportBatchManual() {
     submitting = "batchExport"
     const DIFFICULTY_MAP: Record<number, string> = {
@@ -209,14 +194,14 @@
     if(data.userData.classRank in CLASS_MAP){
       output.classes["matchingClass"] = CLASS_MAP[data.userData.classRank]
     }
-    download(JSON.stringify(output), `AquaDX_maimai2_BatchManualExport_${values[0]}.json`)
+    download(JSON.stringify(output), `AquaDX_maimai2_BatchManualExport_${userNameField.value}.json`)
     submitting = ""
   }
 
   function exportData() {
     submitting = "export"
     GAME.export('mai2')
-      .then(data => download(JSON.stringify(data), `AquaDX_maimai2_export_${values[0]}.json`))
+      .then(data => download(JSON.stringify(data), `AquaDX_maimai2_export_${userNameField.value}.json`))
       .catch(e => error = e.message)
       .finally(() => submitting = "")
   }
@@ -224,25 +209,8 @@
 
 {#if !loading}
 <div class="fields">
-  {#each profileFields as [field, name], i (field)}
-    <div class="field">
-      <label for={field}>{name}</label>
-      <div>
-        <input id={field} type="text"
-               bind:value={values[i]} on:input={() => changed = [...changed, field]}
-               placeholder={field === 'password' ? t('settings.profile.unchanged') : t('settings.profile.unset')}/>
-        {#if changed.includes(field) && values[i]}
-          <button transition:slide={{axis: 'x'}} on:click={() => submit(field, values[i])}>
-            {#if submitting === field}
-              <Icon icon="line-md:loading-twotone-loop"/>
-            {:else}
-              {t('settings.profile.save')}
-            {/if}
-          </button>
-        {/if}
-      </div>
-    </div>
-  {/each}
+  <InputField bind:field={userNameField}
+    callback={() => GAME.changeName('mai2', userNameField.value)}/>
   {#if userIsUsingPreset}
     <blockquote class="info">
       {t('settings.options.all.preset-warning')}
@@ -250,46 +218,46 @@
   {/if}
   <div class="fields-ranges">
     <!-- TODO: determine min & max -->
-    <UserOptionSlider 
+    <UserOptionSlider
       game="mai2" type="noteSpeed"
-      minValue={0} maxValue={37} 
-      defaultValue={userOptions["noteSpeed"]} 
-      getTextFunction={(value: number) => value >= 37 ? "SONIC" : `${(value / 4) + 1}`} 
+      minValue={0} maxValue={37}
+      defaultValue={userOptions["noteSpeed"]}
+      getTextFunction={(value: number) => value >= 37 ? "SONIC" : `${(value / 4) + 1}`}
     />
-    <UserOptionSlider 
+    <UserOptionSlider
       game="mai2" type="touchSpeed"
-      minValue={0} maxValue={37} 
-      defaultValue={userOptions["touchSpeed"]} 
-      getTextFunction={(value: number) => value >= 37 ? "SONIC" : `${(value / 4) + 1}`} 
+      minValue={0} maxValue={37}
+      defaultValue={userOptions["touchSpeed"]}
+      getTextFunction={(value: number) => value >= 37 ? "SONIC" : `${(value / 4) + 1}`}
     />
-    <UserOptionSlider 
+    <UserOptionSlider
       game="mai2" type="slideSpeed"
-      minValue={0} maxValue={20} 
-      defaultValue={userOptions["slideSpeed"]} 
-      getTextFunction={(value: number) => value == 10 ? "Normal" : `${value > 10 ? "Late" : "Fast"} ${(Math.abs(value - 10) / 10).toFixed(1)}`} 
+      minValue={0} maxValue={20}
+      defaultValue={userOptions["slideSpeed"]}
+      getTextFunction={(value: number) => value == 10 ? "Normal" : `${value > 10 ? "Late" : "Fast"} ${(Math.abs(value - 10) / 10).toFixed(1)}`}
     />
-    <UserOptionSlider 
-      game="mai2" type="headPhoneVolume" 
-      minValue={0} maxValue={19} 
-      defaultValue={userOptions["headPhoneVolume"]} 
-      getTextFunction={(value: number) => `${((value / 19) * 100).toFixed(0)}%`} 
+    <UserOptionSlider
+      game="mai2" type="headPhoneVolume"
+      minValue={0} maxValue={19}
+      defaultValue={userOptions["headPhoneVolume"]}
+      getTextFunction={(value: number) => `${((value / 19) * 100).toFixed(0)}%`}
     />
-    <UserOptionSlider 
-      game="mai2" type="trackSkip" 
-      minValue={0} maxValue={11} 
-      defaultValue={userOptions["trackSkip"]} 
+    <UserOptionSlider
+      game="mai2" type="trackSkip"
+      minValue={0} maxValue={11}
+      defaultValue={userOptions["trackSkip"]}
       getTextFunction={(value: number) => [
-        t('settings.options.all.none'), 
-        t('settings.options.all.push'), 
-        `S`, `SS`, `SSS`, 
-        t('settings.options.all.personal-best'), 
-        t('settings.options.all.rival-score'), 
+        t('settings.options.all.none'),
+        t('settings.options.all.push'),
+        `S`, `SS`, `SSS`,
+        t('settings.options.all.personal-best'),
+        t('settings.options.all.rival-score'),
         `${t('settings.options.all.life')} 300`,
         `${t('settings.options.all.life')} 100`,
         `${t('settings.options.all.life')} 50`,
         `${t('settings.options.all.life')} 10`,
         `${t('settings.options.all.life')} 1`
-      ][value]} 
+      ][value]}
     />
   </div>
   <GameSettingFields game="mai2"/>
@@ -304,7 +272,7 @@
 </div>
 {/if}
 
-<StatusOverlays {error} loading={!values[0] || !!submitting || loading}/>
+<StatusOverlays {error} loading={!userNameField || !!submitting || loading}/>
 
 <style lang="sass">
   .fields

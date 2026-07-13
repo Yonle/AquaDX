@@ -244,16 +244,22 @@ class UserRegistrar(
     val keychipPattern = Regex("^([A-Z\\d]{4}-[A-Z\\d]{11}|[A-Z\\d]{15})$")
     val keychipRange = 1e9.toULong()..1e10.toULong() - 1UL
 
+    private fun generateKeychipId(): String {
+        // 1337 is retained for backwards compatibility, it's no longer required for cabinet keychips
+        var keychip = "A" + keychipRange.random() + "1337"
+        while ( userKeychipRepo.existsByKeychipId(keychip) )
+            keychip = "A" + keychipRange.random() + "1337"
+        return keychip
+    }
 
     private fun ensureCanModifyKeychips(u: AquaNetUser) {
         if (!u.canModifyKeychips) 403 - "You don't have permission to modify keychips"
     }
-
     private fun validateCustomKeychip(keychipId: Str): Str {
         val raw = keychipId.trim().uppercase()
 
         if (!keychipPattern.matches(raw))
-            400 - "Invalid keychip format. Expected 15 or 11 characters (with optional dash)"
+            400 - "Invalid keychip format. Expected 11 or 15 characters (with optional dash)"
 
         return raw.replace("-", "")
     }
@@ -262,6 +268,11 @@ class UserRegistrar(
     @Doc("List all keychip IDs associated with the current user's account.", "List of keychip IDs")
     suspend fun listKeychips(@RP token: Str) = jwt.auth(token) { u ->
         val keychips = async { userKeychipRepo.findAllByUserAuId(u.auId) }
+        if (keychips.isEmpty() && !u.canModifyKeychips) {
+            val keychip = UserKeychip(0, u, generateKeychipId())
+            userKeychipRepo.save(keychip)
+            log.info("Net: Assigned keychip ${keychip.keychipId} to ${u.auId}")
+        }
         mapOf("keychips" to keychips.map { it.keychipId })
     }
 
@@ -325,5 +336,5 @@ class UserRegistrar(
         }
 
         SUCCESS
-        }
+    }
 }

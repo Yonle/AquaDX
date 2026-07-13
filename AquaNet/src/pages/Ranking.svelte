@@ -70,11 +70,18 @@
               <span>{user.name}</span>
             {/if}
           </span>
-          <span class="rating">{
-            game === 'chu3' || game === 'ongeki' ?
-              (user.rating / 100).toFixed(2) :
-              user.rating.toLocaleString()
-          }</span>
+          {#if game == 'ongeki'}
+            <span class="rating">{
+              (user.rating / 1000).toFixed(3)
+            }</span>
+          {:else}
+            <span class="rating">{
+              game === 'chu3' ?
+                (user.rating / 100).toFixed(2) :
+                user.rating.toLocaleString()
+            }</span>
+          {/if}
+          
           <span class="accuracy">{(+user.accuracy).toFixed(2)}%</span>
           <span class="fc">{user.fullCombo}</span>
           <span class="ap">{user.allPerfect}</span>
@@ -141,6 +148,14 @@
 
       .accuracy
         display: none
+      .modern-rating
+        display: none
+      .legacy-rating
+        /* this is officially the worst css i've ever written dear god */
+        white-space: nowrap
+        overflow: hidden
+        text-overflow: clip
+        min-width: 3.5em !important
 
     &.alternate
       background-color: vars.$ov-light

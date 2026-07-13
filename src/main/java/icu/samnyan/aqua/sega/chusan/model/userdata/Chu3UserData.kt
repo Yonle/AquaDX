@@ -53,6 +53,7 @@ class Chu3UserData : BaseEntity(), IUserData {
     var nameplateId = 0
     var frameId = 0
     var characterId = 0
+    var mateId = 0
     var trophyId = 0
     var playedTutorialBit = 0
     var firstTutorialCancelNum = 0
@@ -81,6 +82,9 @@ class Chu3UserData : BaseEntity(), IUserData {
 
     @JsonIgnore
     var lastLoginDate: LocalDateTime = LocalDateTime.now()
+
+    @JsonIgnore
+    var banState: Int = 0
 
     @JsonDeserialize(using = FlexibleDateTimeDeserializer::class)
     override var lastPlayDate: LocalDateTime = LocalDateTime.now()

@@ -111,7 +111,7 @@ interface OgkUserOptionRepo : OngekiUserLinked<UserOption>
 
 interface OgkUserPlaylogRepo : OngekiUserLinked<UserPlaylog>, GenericPlaylogRepo<UserPlaylog>
 
-interface OgkUserRivalDataRepo : OngekiUserLinked<UserRival>
+interface OgkUserRivalRepo : OngekiUserLinked<UserRival>
 
 interface OgkUserScenarioRepo : OngekiUserLinked<UserScenario> {
     fun findByUserAndScenarioId(user: UserData, scenarioId: Int): UserScenario?
@@ -187,7 +187,7 @@ class OngekiUserRepos(
     val musicItem: OgkUserMusicItemRepo,
     val option: OgkUserOptionRepo,
     val playlog: OgkUserPlaylogRepo,
-    val rivalData: OgkUserRivalDataRepo,
+    val rival: OgkUserRivalRepo,
     val scenario: OgkUserScenarioRepo,
     val story: OgkUserStoryRepo,
     val techCount: OgkUserTechCountRepo,

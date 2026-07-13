@@ -1,6 +1,7 @@
 package icu.samnyan.aqua.net.games.ongeki
 
 import ext.API
+import ext.Bool
 import ext.RP
 import ext.minus
 import icu.samnyan.aqua.net.db.AquaUserServices
@@ -35,23 +36,39 @@ class Ongeki(
 
     override val shownRanks = ongekiScores.filter { it.first >= 950000 }
     override val settableFields: Map<String, (UserData, String) -> Unit> by lazy { mapOf(
-        "userName" to usernameCheck(SEGA_USERNAME_CHARS),
+        "userName" to usernameCheck(false),
 
         "lastRomVersion" to { u, v -> u.lastRomVersion = v },
         "lastDataVersion" to { u, v -> u.lastDataVersion = v },
     ) }
 
     override suspend fun userSummary(username: String, token: String?) = us.cardByName(username) { card ->
+        val user = userDataRepo.findByCard_ExtId(card.extId) ?: (404 - "User not found")
         val extra = userGeneralDataRepository.findByUser_Card_ExtId(card.extId)
             .associate { it.propertyKey to it.propertyValue }
 
-        val ratingComposition = mapOf(
-            "best30" to (extra["rating_base_best"] ?: ""),
-            "best15" to (extra["rating_base_new_best"] ?: ""),
-            "recent10" to (extra["rating_base_hot_best"] ?: "")
-        )
+        val isRefresh = user.newHighestRating > 0
+        if (isRefresh)
+            genericUserSummary(card, mapOf(
+                "best50" to (extra["new_rating_base_best"] ?: ""),
+                "new10" to (extra["new_rating_base_new_best"] ?: ""),
+                "pscore50" to (extra["new_rating_base_pscore"] ?: ""),
+                "best20_candidates" to (extra["new_rating_base_next_best"] ?: ""),
+                "new10_candidates" to (extra["new_rating_base_new_next_best"] ?: ""),
+                "pscore20_candidates" to (extra["new_rating_base_next_pscore"] ?: "")
+            ))
+        else
+            genericUserSummary(card, mapOf(
+                "best30" to (extra["rating_base_best"] ?: ""),
+                "new15" to (extra["rating_base_new_best"] ?: ""),
+                "recent10" to (extra["rating_base_hot_best"] ?: "")
+            ))
+    }
 
-        genericUserSummary(card, ratingComposition)
+    override fun getRating(user: UserData, isHighest: Bool): Int {
+        return if (user.newHighestRating > 0) {
+            if (isHighest) user.newHighestRating else user.newPlayerRating
+        } else if (isHighest) user.highestRating else user.playerRating
     }
 
     @API("user-option")

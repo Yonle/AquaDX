@@ -1,8 +1,6 @@
 package icu.samnyan.aqua.net.games
 
-import ext.isoDate
-import ext.minus
-import ext.mut
+import ext.*
 import java.time.LocalDate
 
 const val LETTERS = "ＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺ" +
@@ -17,10 +15,10 @@ const val WACCA_USERNAME_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ" +
     "0123456789" +
     "~|?!=()[]{},.:;\"@/_-+#*&%$"
 
-fun usernameCheck(chars: String): (IUserData, String) -> Unit = { u, v ->
-    u.userName = v
+fun usernameCheck(isWacca: Bool): (IUserData, String) -> Unit = { u, v ->
     if (v.isBlank()) { 400 - "Username cannot be blank" }
     if (v.length > 8) { 400 - "Username too long" }
+    u.userName = if (!isWacca) toFullWidth(v) else v
 //    v.find { it !in chars }?.let { 400 - "Invalid character '$it' in username" }
 }
 
